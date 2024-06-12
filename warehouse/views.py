@@ -23,7 +23,10 @@ def create_product(request):
         price = data['price']
         expire_date = data['expire_date']
 
-        product = Product(name=name, country=country, category=category, price=price, expire_date=expire_date)
+        product = Product(
+            name=name, country=country, category=category,
+            price=price, expire_date=expire_date
+        )
 
         product.save()
         return JsonResponse({'id': product.product_id}, status=201)
@@ -46,3 +49,7 @@ def get_product(request):
 def del_product(request):
     if request.method == 'DELETE':
         json.loads(request.body)
+        product = Product.objects.filter(id=id).delete()
+        return JsonResponse({'id': product.product_id}, ': DELETED')
+    else:
+        return HttpResponseBadRequest("Invalid request method")
