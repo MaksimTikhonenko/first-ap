@@ -5,12 +5,15 @@ from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
-from warehouse.models import Product
+from warehouse.models import Product, Personnel
+
 
 @csrf_exempt
 def healthcheck(request):
     return HttpResponse("OK", status=200)
 
+
+# ---------Class_Product----------
 @csrf_exempt
 def create_product(request):
     if request.method == 'POST':
@@ -38,8 +41,6 @@ def create_product(request):
 def get_product(request):
     if request.method == 'GET':
 
-        json.loads(request.body)
-
         product = Product.objects.all().values()
 
         return JsonResponse(list(product), safe=False)
@@ -48,8 +49,40 @@ def get_product(request):
 @csrf_exempt
 def del_product(request):
     if request.method == 'DELETE':
-        json.loads(request.body)
+        #json.loads(request.body)
         product = Product.objects.filter(id=id).delete()
         return JsonResponse({'id': product.product_id}, ': DELETED')
     else:
         return HttpResponseBadRequest("Invalid request method")
+
+
+#  --------- New_class_Personnel -------------
+@csrf_exempt
+def create_person(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+
+        name = data['name']
+        age = data['age']
+        position = data['position']
+        start_of_work = data['start_of_work']
+
+        person = Personnel(
+            name=name, age=age, position=position,
+            start_of_work=start_of_work
+        )
+
+        person.save()
+        return JsonResponse({'id': person.person_id}, status=201)
+    else:
+        return HttpResponseBadRequest("Invalid request method")
+
+
+@csrf_exempt
+def get_person(request):
+    if request.method == 'GET':
+
+        person = Personnel.objects.all().values()
+
+        return JsonResponse(list(person), safe=False)
