@@ -49,14 +49,16 @@ def get_product(request):
 @csrf_exempt
 def del_product(request):
     if request.method == 'DELETE':
-        #json.loads(request.body)
-        product = Product.objects.filter(id=id).delete()
+
+        product = Product.objects.get(product_id=id)
+        product.delete()
+
         return JsonResponse({'id': product.product_id}, ': DELETED')
     else:
         return HttpResponseBadRequest("Invalid request method")
 
 
-#  --------- New_class_Personnel -------------
+#  --------- Class_Personnel -------------
 @csrf_exempt
 def create_person(request):
     if request.method == 'POST':
